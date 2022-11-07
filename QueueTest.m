@@ -1,9 +1,10 @@
 % Test ItemQueue
 clc;clear
-size = 5;
+size = 3;
 myQueue = ItemQueue(size);
 
 % Preconditions
+testCase = matlab.unittest.TestCase.forInteractiveUse;
 
 
 %% Test 1: Is empty with no elements
@@ -13,16 +14,18 @@ assert(myQueue.isEmpty());
 assert(~myQueue.isFull);
 
 %% Test 3: Initializing a <= 0 ItemQueue
-try
-    ItemQueue(0);
-catch ME
-    if strcmp(ME.identifier, 'Constructor:InputMustBeGreaterThenZero')
-        assert(true)
-    else
-        ME %#ok
-        assert(false)
-    end
-end
+verifyError(testCase,@() ItemQueue(0), 'Constructor:InputMustBeGreaterThenZero');
+
+% try
+%     ItemQueue(0);
+% catch ME
+%     if strcmp(ME.identifier, 'Constructor:InputMustBeGreaterThenZero')
+%         assert(true)
+%     else
+%         ME %#ok
+%         assert(false)
+%     end
+% end
 
 %% Test 4: Error on dequeueing empty queue
 try
@@ -49,4 +52,12 @@ catch ME
     end
     ME %#ok
     assert(false)
+end
+
+%% Test 10: Testing error
+myQueue.enqueue(1)
+try
+    myQueue.dequeue();
+catch ME
+    assert(ME.identifier == Dequeue:Underflow)
 end
